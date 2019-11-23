@@ -50,25 +50,28 @@ def retrieve_content(data):
     article_url = data['article']
     article_name = article_url.split('/')[-1]
     print(article_name, '|', article_url)
-    pageid = list(requests.get('https://en.wikipedia.org/w/api.php?action=query&format=json&titles={}'
-                               .format(article_name)).json()['query']['pages'].keys())[0]
-    content = wikipedia.page(pageid=pageid).content
+    api_response_json = requests.get('https://en.wikipedia.org/w/api.php?action=query&format=json&titles={}'
+                               .format(article_name)).json()
+    try:
+        content = wikipedia.page(pageid=list(api_response_json['query']['pages'].keys())[0]).content
+    except Exception as e:
+        try:
+            print(e, "\ntrying 'title' instead of 'pageid'...")
+            content = wikipedia.page(title=list(api_response_json['query']['pages'].values())[0]['title']).content
+            print('alternative method successful!')
+        except Exception as e:
+            content = ''
+            print(e, 'alternative method failed')
     return article_name, article_url, content
 
 
 i = 0
 for item in data_deduplicated:
     print(i, end=' ')
-    try:
-        article_name, article_url, content = retrieve_content(item)
-    except Exception as e:
-        print(e)
+    article_name, article_url, content = retrieve_content(item)
     if not os.path.exists('crawled_biographies'):
         os.mkdir('crawled_biographies')
     with open('crawled_biographies/{}.txt'.format(article_name), 'w') as file:
         file.write(content)
     i += 1
     time.sleep(2)
-
-
-
