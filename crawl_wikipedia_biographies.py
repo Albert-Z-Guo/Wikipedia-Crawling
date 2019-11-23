@@ -53,16 +53,16 @@ def retrieve_content(data):
     
     # check if file exists
     if os.path.isfile('crawled_biographies/{}.txt'.format(article_name)):
-        print('{}.txt exist'.format(article_name))
+        print('{}.txt exists'.format(article_name))
     else:
         api_response_json = requests.get('https://en.wikipedia.org/w/api.php?action=query&format=json&titles={}'
                                .format(article_name)).json()
         try:
-            content = wikipedia.page(pageid=list(api_response_json['query']['pages'].keys())[0]).content
+            content = wikipedia.page(title=list(api_response_json['query']['pages'].values())[0]['title']).content
         except Exception as e:
             try:
                 print(e, "Trying 'title' instead of 'pageid'...", end=' ')
-                content = wikipedia.page(title=list(api_response_json['query']['pages'].values())[0]['title']).content
+                content = wikipedia.page(pageid=list(api_response_json['query']['pages'].keys())[0]).content
                 print('alternative method successful!')
             except Exception as e:
                 content = ''
@@ -80,4 +80,4 @@ for i in range(start, len(data_deduplicated)):
     print(i, end=' ')
     retrieve_content(data_deduplicated[i])
     i += 1
-    time.sleep(2)
+    time.sleep(1)
