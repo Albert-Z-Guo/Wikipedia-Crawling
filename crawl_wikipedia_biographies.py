@@ -50,28 +50,34 @@ def retrieve_content(data):
     article_url = data['article']
     article_name = article_url.split('/')[-1]
     print(article_name, '|', article_url)
-    api_response_json = requests.get('https://en.wikipedia.org/w/api.php?action=query&format=json&titles={}'
+    
+    # check if file exists
+    if os.path.isfile('crawled_biographies/{}.txt'.format(article_name)):
+        print('{}.txt exist'.format(article_name))
+    else:
+        api_response_json = requests.get('https://en.wikipedia.org/w/api.php?action=query&format=json&titles={}'
                                .format(article_name)).json()
-    try:
-        content = wikipedia.page(pageid=list(api_response_json['query']['pages'].keys())[0]).content
-    except Exception as e:
         try:
-            print(e, "\ntrying 'title' instead of 'pageid'...")
-            content = wikipedia.page(title=list(api_response_json['query']['pages'].values())[0]['title']).content
-            print('alternative method successful!')
+            content = wikipedia.page(pageid=list(api_response_json['query']['pages'].keys())[0]).content
         except Exception as e:
-            content = ''
-            print(e, 'alternative method failed')
-    return article_name, article_url, content
+            try:
+                print(e, "Trying 'title' instead of 'pageid'...", end=' ')
+                content = wikipedia.page(title=list(api_response_json['query']['pages'].values())[0]['title']).content
+                print('alternative method successful!')
+            except Exception as e:
+                content = ''
+                print(e, 'alternative method failed!')
+        
+        # save file
+        filename = 'crawled_biographies/{}.txt'.format(article_name)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w') as file:
+            file.write(content)
 
 
-i = 0
-for item in data_deduplicated:
+start = 0
+for i in range(start, len(data_deduplicated)):
     print(i, end=' ')
-    article_name, article_url, content = retrieve_content(item)
-    if not os.path.exists('crawled_biographies'):
-        os.mkdir('crawled_biographies')
-    with open('crawled_biographies/{}.txt'.format(article_name), 'w') as file:
-        file.write(content)
+    retrieve_content(data_deduplicated[i])
     i += 1
     time.sleep(2)
