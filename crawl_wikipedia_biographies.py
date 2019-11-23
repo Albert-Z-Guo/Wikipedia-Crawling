@@ -80,4 +80,5 @@ for i in range(start, len(data_deduplicated)):
     print(i, end=' ')
     retrieve_content(data_deduplicated[i])
     i += 1
-    time.sleep(1)
+    if i % 5 == 0:
+        time.sleep(1)
