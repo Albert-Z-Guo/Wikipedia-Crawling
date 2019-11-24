@@ -67,7 +67,7 @@ print('number of unique articles:', len(articles))
 
 
 # select 20000 random articles
-data_selected = [data_deduplicated[i] for i in np.random.choice(20000, len(articles))]
+data_selected = [data_deduplicated[i] for i in np.random.choice(len(articles), 20000)]
 
 
 def retrieve_content(data, directory_name):
