@@ -66,8 +66,8 @@ for item in data:
 print('number of unique articles:', len(articles))
 
 
-# select 20000 random articles
-data_selected = [data_deduplicated[i] for i in np.random.choice(len(articles), 20000)]
+# select 20000 random articles' indices
+data_selected_indices = np.random.choice(len(articles), 20000)
 
 
 def retrieve_content(data, directory_name):
@@ -97,11 +97,21 @@ def retrieve_content(data, directory_name):
             file.write(content)
 
 
-start = 20
-end = len(data_selected)
+# crawl randomly selected articles
+# for i, data in enumerate(data_selected_indices):
+#     print(i, end=' ')
+#     retrieve_content(data, filename)
+#     i += 1
+#     if i % 5 == 0:
+#         time.sleep(1)
+
+
+# crawl articles from start and end indices
+start = 0
+end = len(data_deduplicated)
 for i in range(start, end):
     print(i, end=' ')
-    retrieve_content(data_selected[i], filename)
+    retrieve_content(data_deduplicated[i], filename)
     i += 1
     if i % 5 == 0:
         time.sleep(1)
