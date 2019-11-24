@@ -51,7 +51,7 @@ with open('people_test.json', 'w') as outfile:
 
 # filename = 'people_won_awards_1910_2010_en'
 filename = 'scientists_1500_2010_en'
-with open('{}.json'.format(filename)) as json_file:
+with open('data/{}.json'.format(filename)) as json_file:
     data = json.load(json_file)
 print('data length:', len(data))
 
