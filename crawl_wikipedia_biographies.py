@@ -95,6 +95,8 @@ def retrieve_content(data, directory_name):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w') as file:
             file.write(content)
+        # prevent IP getting blocked
+        time.sleep(np.random.default_rng().random() + 0.5)
 
 
 # crawl randomly selected articles
@@ -102,8 +104,6 @@ def retrieve_content(data, directory_name):
 #     print(i, end=' ')
 #     retrieve_content(data, filename)
 #     i += 1
-#     if i % 5 == 0:
-#         time.sleep(1)
 
 
 # crawl articles from start and end indices
@@ -112,6 +112,4 @@ end = len(data_deduplicated)
 for i in range(start, end):
     print(i, end=' ')
     retrieve_content(data_deduplicated[i], filename)
-    i += 1
-    if i % 5 == 0:
-        time.sleep(1)
+    i += 1 
