@@ -73,8 +73,8 @@ data_selected_indices = np.random.choice(len(articles), 20000)
 def retrieve_content(data, directory_name):
     article_url = data['article']
     article_name = article_url.split('/')[-1]
-    print(article_name, '|', article_url)
-    
+    print('{:<45} | {}'.format(article_name, article_url))
+
     # check if file exists
     file_path = '{}/{}.txt'.format(directory_name, article_name)
     if os.path.isfile(file_path):
@@ -95,7 +95,7 @@ def retrieve_content(data, directory_name):
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, 'w') as file:
             file.write(content)
-        # prevent IP getting blocked
+        
         time.sleep(np.random.default_rng().random() + 0.5)
 
 
@@ -112,4 +112,4 @@ end = len(data_deduplicated)
 for i in range(start, end):
     print(i, end=' ')
     retrieve_content(data_deduplicated[i], filename)
-    i += 1 
+    i += 1
