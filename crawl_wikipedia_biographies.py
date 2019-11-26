@@ -73,13 +73,14 @@ data_selected_indices = np.random.choice(len(articles), 20000)
 def retrieve_content(data, directory_name):
     article_url = data['article']
     article_name = article_url.split('/')[-1]
-    print('{:<45} | {}'.format(article_name, article_url))
-
+    
     # check if file exists
+    content = None
     file_path = '{}/{}.txt'.format(directory_name, article_name)
     if os.path.isfile(file_path):
-        print('{}.txt exists'.format(article_name))
+        print('{:<50} | {:<80} | downloaded'.format(article_name, article_url))
     else:
+        print('{:<45} | {:<80} | downloading'.format(article_name, article_url))
         api_response_json = requests.get('https://en.wikipedia.org/w/api.php?action=query&format=json&titles={}'.format(article_name)).json()
         try:
             content = wikipedia.page(title=list(api_response_json['query']['pages'].values())[0]['title']).content
@@ -89,12 +90,12 @@ def retrieve_content(data, directory_name):
                 content = wikipedia.page(pageid=list(api_response_json['query']['pages'].keys())[0]).content
                 print('alternative method successful!')
             except Exception as e:
-                content = ''
                 print(e, 'alternative method failed!')
         # save file
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w') as file:
-            file.write(content)
+        if content is not None:
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            with open(file_path, 'w') as file:
+                file.write(content)
         
         time.sleep(np.random.default_rng().random() + 0.5)
 
