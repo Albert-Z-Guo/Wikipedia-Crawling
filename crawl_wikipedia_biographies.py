@@ -14,17 +14,17 @@ import numpy as np
 # retrieve articles of people (born after 1500 and die before 2010) who received an award
 query = """
 SELECT DISTINCT ?article WHERE {  
-  ?award (wdt:P31/(wdt:P279*)) wd:Q618779. # instance or subclass of an award
-  ?person wdt:P31 wd:Q5; # person is instance of human
-          wdt:P166 ?award. # person received an award
+    ?award (wdt:P31/(wdt:P279*)) wd:Q618779. # instance or subclass of an award
+    ?person wdt:P31 wd:Q5; # person is instance of human
+            wdt:P166 ?award. # person received an award
   
-  ?person wdt:P569 ?birth;
-          wdt:P570 ?death.
-  
-  ?article schema:about ?person.
-  ?article schema:isPartOf <https://en.wikipedia.org/>. # article is in English
-  
-  FILTER((?birth > "1900-01-01"^^xsd:dateTime) && (?death < "2010-01-01"^^xsd:dateTime))
+    ?person wdt:P569 ?birth;
+            wdt:P570 ?death.
+
+    ?article schema:about ?person.
+    ?article schema:isPartOf <https://en.wikipedia.org/>. # article is in English
+
+    FILTER((?birth > "1900-01-01"^^xsd:dateTime) && (?death < "2010-01-01"^^xsd:dateTime))
 }
 """
 
